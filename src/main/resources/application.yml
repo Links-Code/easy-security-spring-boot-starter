@@ -1,0 +1,4 @@
+easy:
+  security:
+    ignore-paths: ['/login/**']
+    auth-aspect-order: 100
