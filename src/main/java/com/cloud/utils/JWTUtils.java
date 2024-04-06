@@ -1,0 +1,108 @@
+package com.cloud.utils;
+
+import com.cloud.beans.UserInfo;
+import com.cloud.config.SecurityProperties;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
+
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+public class JWTUtils implements InitializingBean {
+
+    private static String SECRET;
+    private static final String ALGORITHM = "HmacSHA256";
+
+    public static int OVER_TIME = 14;
+
+    SecurityProperties securityProperties;
+
+    public static String KEY_PRE = "user-info-";
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        SECRET = securityProperties.getTokenPrivateKey();
+        OVER_TIME = securityProperties.getOverTime();
+        KEY_PRE = securityProperties.getUserInfoPrefixToCache();
+    }
+
+    public JWTUtils(SecurityProperties securityProperties) {
+        this.securityProperties = securityProperties;
+    }
+
+    public static void main(String[] args) {
+        // 创建JWT
+        //String jwt = createJWT("user@example.com");
+//        System.out.println("JWT Token: " + jwt);
+//
+//        // 解析JWT
+//        Map<String, String> claims = parseJWT(jwt);
+//        System.out.println("User email: " + claims.get("email"));
+//
+//        // 验证JWT是否为本系统生成的
+//        boolean isValid = validateJWT(jwt);
+//        System.out.println("Is JWT valid for this system? " + isValid);
+    }
+
+    public static String createJWT(UserInfo userInfo) {
+        // 创建 Header
+        Map<String, String> header = new HashMap<>();
+        header.put("alg", "HS256");
+        header.put("typ", "JWT");
+        String encodedHeader = base64Encode(header);
+
+        // 创建 Payload
+        Map<String, String> payload = new HashMap<>();
+        payload.put(KEY_PRE + userInfo.getUserId(),JSONUtil.toJsonString(userInfo));
+        long currentTimeMillis = System.currentTimeMillis();
+        payload.put("exp", String.valueOf(currentTimeMillis + 3600L * 1000 * 24 * 14 * OVER_TIME)); // 设置过期时间为当前时间后的一小时
+        String encodedPayload = base64Encode(payload);
+
+        // 创建 Signature
+        String signature = generateSignature(encodedHeader + "." + encodedPayload, SECRET);
+
+        // 构建 JWT
+        return encodedHeader + "." + encodedPayload + "." + signature;
+    }
+
+    public static Map<String, String> parseJWT(String jwt) {
+        String[] parts = jwt.split("\\.");
+        Map<String, String> claims = new HashMap<>();
+        claims.put("header", base64Decode(parts[0]));
+        claims.put("payload", base64Decode(parts[1]));
+        return claims;
+    }
+
+    public static boolean validateJWT(String jwt) {
+        String[] parts = jwt.split("\\.");
+        String signature = generateSignature(parts[0] + "." + parts[1], SECRET);
+        return signature.equals(parts[2]);
+    }
+
+    private static String base64Encode(Map<String, String> data) {
+        // 将 Map 转换为 JSON 字符串，然后进行 Base64 编码
+        String json = JSONUtil.toJsonString(data);
+        return Base64.getEncoder().encodeToString(json.getBytes());
+    }
+
+    private static String base64Decode(String encodedString) {
+        byte[] bytes = Base64.getDecoder().decode(encodedString);
+        return new String(bytes);
+    }
+
+    private static String generateSignature(String data, String secret) {
+        try {
+            Mac mac = Mac.getInstance(ALGORITHM);
+            SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(), ALGORITHM);
+            mac.init(secretKeySpec);
+            byte[] bytes = mac.doFinal(data.getBytes());
+            return Base64.getEncoder().encodeToString(bytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}

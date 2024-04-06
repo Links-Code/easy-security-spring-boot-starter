@@ -1,11 +1,12 @@
 package com.cloud.common;
 
 import cn.hutool.crypto.SecureUtil;
+import com.cloud.utils.MD5Util;
 
 public class Md5PasswordHandle implements PasswordHandle{
     @Override
     public String encode(String password) {
-        return SecureUtil.md5(password);
+        return MD5Util.encode(password);
     }
 
     @Override

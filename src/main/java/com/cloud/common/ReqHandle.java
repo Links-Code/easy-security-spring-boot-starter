@@ -1,7 +1,6 @@
 package com.cloud.common;
 
 import com.cloud.beans.UserInfo;
-
 import javax.servlet.http.HttpServletRequest;
 
 public interface ReqHandle {

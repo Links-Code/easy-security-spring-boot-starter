@@ -1,12 +1,9 @@
 package com.cloud.common;
-
-import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.symmetric.AES;
-import lombok.Data;
 import org.springframework.beans.factory.InitializingBean;
 import javax.crypto.SecretKey;
-@Data
+
 public class AESPasswordHandle implements PasswordHandle, InitializingBean {
 
 
@@ -22,12 +19,12 @@ public class AESPasswordHandle implements PasswordHandle, InitializingBean {
 
     @Override
     public String encode(String password) {
-        return new String(aes.encrypt(password,CharsetUtil.CHARSET_UTF_8));
+        return new String(aes.encrypt(password));
     }
 
     @Override
     public String decode(String secretStr) {
-        return aes.decryptStr(secretStr, CharsetUtil.CHARSET_UTF_8);
+        return aes.decryptStr(secretStr);
     }
 
     @Override
@@ -35,5 +32,19 @@ public class AESPasswordHandle implements PasswordHandle, InitializingBean {
         return decode(secretPassword).equals(formPassword);
     }
 
+    public SecretKey getKey() {
+        return key;
+    }
 
+    public void setKey(SecretKey key) {
+        this.key = key;
+    }
+
+    public AES getAes() {
+        return aes;
+    }
+
+    public void setAes(AES aes) {
+        this.aes = aes;
+    }
 }

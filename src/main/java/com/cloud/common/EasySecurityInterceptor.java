@@ -1,16 +1,16 @@
 package com.cloud.common;
 
 import com.cloud.config.SecurityProperties;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-@Slf4j
 public class EasySecurityInterceptor implements HandlerInterceptor, Ordered {
+
+    private static final Logger log = LoggerFactory.getLogger(EasySecurityInterceptor.class);
 
     ReqHandle reqHandle;
 
@@ -24,21 +24,32 @@ public class EasySecurityInterceptor implements HandlerInterceptor, Ordered {
         this.securityManage = securityManage;
     }
 
+    private static final String HANDLED_FLAG_ATTRIBUTE = "easySecurityInterceptorHandled";
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        /**
+         * 由于在控制器或者业务层抛出异常 导致preHandle回执行两次 所以进行判断
+         */
+        //判断Thread local是否有用户信息
+        if (securityManage.threadUserInfo.get() != null){
+            //防止内存泄漏
+            securityManage.threadUserInfo.remove();
+            return true;
+        }
         //是否进行登录认证
         if (securityProperties.getEnableLogin()) {
             try {
                 //需要拦截请求进行处理
-                reqHandle.reqThrough(request);
+                return reqHandle.reqThrough(request);
             }catch (Exception e){
                 //防止内存溢出
                 securityManage.remove();
                 log.error("拦截器发生异常:",e);
+                throw new Exception(e);
             }
-            return true;
         }else {
-            return HandlerInterceptor.super.preHandle(request, response, handler);
+            return true;
         }
     }
 

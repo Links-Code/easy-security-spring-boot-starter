@@ -1,23 +1,21 @@
 package com.cloud.common;
 
-import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
-import cn.hutool.jwt.JWTPayload;
 import cn.hutool.jwt.JWTUtil;
 import com.alibaba.fastjson2.JSON;
 import com.cloud.beans.UserInfo;
 import com.cloud.config.SecurityProperties;
+import com.cloud.exceptions.TokenOverTimeException;
 import com.cloud.exceptions.UnLoginException;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import com.cloud.utils.JWTUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
-
 import javax.servlet.http.HttpServletRequest;
-import java.util.Set;
-
-@Data
-@Slf4j
 public class DefaultReqHandle implements ReqHandle {
+
+    private static final Logger log = LoggerFactory.getLogger(DefaultReqHandle.class);
+
 
     private SecurityProperties securityProperties;
 
@@ -43,7 +41,10 @@ public class DefaultReqHandle implements ReqHandle {
 
     @Override
     public void verify(String token) {
-        JWTUtil.verify(token, securityProperties.getTokenPrivateKey().getBytes());
+        //JWTUtil.verify(token, securityProperties.getTokenPrivateKey().getBytes());
+        boolean isValid = JWTUtils.validateJWT(token);
+        if (!isValid)
+            throw new RuntimeException("非法Token");
     }
 
     /**
@@ -81,7 +82,7 @@ public class DefaultReqHandle implements ReqHandle {
         //获取token
         String token = getToken(request);
         if (!StringUtils.hasText(token)){
-            throw new RuntimeException("token不能为空");
+            throw new UnLoginException(securityProperties.getLoginMsgError());
         }
         //验证是否本系统token
         verify(token);
@@ -90,12 +91,12 @@ public class DefaultReqHandle implements ReqHandle {
         //从缓存中获取用户信息
         UserInfo info = securityCache.get(securityProperties.getUserInfoPrefixToCache() + userInfo.getUserId());
         if (info == null){
-            log.error("😭:{}",securityProperties.getLoginMsgError());
-            throw new UnLoginException(securityProperties.getLoginMsgError());
+            log.error("😭:{} 用户登录过期",userInfo);
+            throw new TokenOverTimeException("用户登录过期!");
         }
         //往threadLocal保存用户信息
         securityManage.threadUserInfo.set(info);
-        return ReqHandle.super.reqThrough(request);
+        return true;
     }
 
 
@@ -117,5 +118,30 @@ public class DefaultReqHandle implements ReqHandle {
             return parts[parts.length - 1];
         }
         return null;
+    }
+
+
+    public SecurityProperties getSecurityProperties() {
+        return securityProperties;
+    }
+
+    public void setSecurityProperties(SecurityProperties securityProperties) {
+        this.securityProperties = securityProperties;
+    }
+
+    public SecurityManage getSecurityManage() {
+        return securityManage;
+    }
+
+    public void setSecurityManage(SecurityManage securityManage) {
+        this.securityManage = securityManage;
+    }
+
+    public SecurityCache getSecurityCache() {
+        return securityCache;
+    }
+
+    public void setSecurityCache(SecurityCache securityCache) {
+        this.securityCache = securityCache;
     }
 }
