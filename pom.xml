@@ -29,25 +29,6 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
         </dependency>
 
-        <!--    hutool工具类    -->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-jwt</artifactId>
-            <version>5.8.25</version>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-crypto</artifactId>
-            <version>5.8.25</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba.fastjson2</groupId>
-            <artifactId>fastjson2</artifactId>
-            <version>2.0.48</version>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
@@ -73,11 +54,4 @@
             </plugin>
         </plugins>
     </build>
-
-
-
-
-
-
-
 </project>

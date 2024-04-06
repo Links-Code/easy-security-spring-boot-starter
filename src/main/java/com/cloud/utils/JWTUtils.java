@@ -2,9 +2,9 @@ package com.cloud.utils;
 
 import com.cloud.beans.UserInfo;
 import com.cloud.config.SecurityProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
-
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +56,12 @@ public class JWTUtils implements InitializingBean {
 
         // 创建 Payload
         Map<String, String> payload = new HashMap<>();
-        payload.put(KEY_PRE + userInfo.getUserId(),JSONUtil.toJsonString(userInfo));
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            payload.put(KEY_PRE,objectMapper.writeValueAsString(userInfo));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         long currentTimeMillis = System.currentTimeMillis();
         payload.put("exp", String.valueOf(currentTimeMillis + 3600L * 1000 * 24 * 14 * OVER_TIME)); // 设置过期时间为当前时间后的一小时
         String encodedPayload = base64Encode(payload);
@@ -84,8 +89,14 @@ public class JWTUtils implements InitializingBean {
 
     private static String base64Encode(Map<String, String> data) {
         // 将 Map 转换为 JSON 字符串，然后进行 Base64 编码
-        String json = JSONUtil.toJsonString(data);
-        return Base64.getEncoder().encodeToString(json.getBytes());
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String json = objectMapper.writeValueAsString(data);
+            return Base64.getEncoder().encodeToString(json.getBytes());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private static String base64Decode(String encodedString) {

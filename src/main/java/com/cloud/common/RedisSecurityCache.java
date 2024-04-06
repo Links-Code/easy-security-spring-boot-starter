@@ -1,7 +1,8 @@
 package com.cloud.common;
-import com.alibaba.fastjson2.JSON;
 import com.cloud.beans.UserInfo;
 import com.cloud.config.SecurityProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import java.util.concurrent.TimeUnit;
 public class RedisSecurityCache implements SecurityCache{
@@ -19,13 +20,24 @@ public class RedisSecurityCache implements SecurityCache{
     public UserInfo get(String key) {
         //检查是否需要进行延期
         extendTime(key);
-        return JSON.parseObject((String) securityRedisTemplate.opsForValue().get(key),UserInfo.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(securityRedisTemplate.opsForValue().get(key), UserInfo.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void set(String key, UserInfo value,Integer overTime) {
-
-        securityRedisTemplate.opsForValue().set(key + value.getUserId(),JSON.toJSONString(value),overTime.longValue(), TimeUnit.DAYS);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String JSON = null;
+        try {
+            JSON = objectMapper.writeValueAsString(value);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        securityRedisTemplate.opsForValue().set(key + value.getUserId(),JSON,overTime.longValue(), TimeUnit.DAYS);
 
     }
 

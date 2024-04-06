@@ -1,12 +1,10 @@
 package com.cloud.common;
 
-import cn.hutool.jwt.JWTUtil;
-import com.alibaba.fastjson2.JSON;
 import com.cloud.beans.UserInfo;
 import com.cloud.config.SecurityProperties;
+import com.cloud.utils.JWTUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.HashMap;
 public class DefaultSecurityManage extends SecurityManage{
 
     private static final Logger log = LoggerFactory.getLogger(DefaultSecurityManage.class);
@@ -47,12 +45,10 @@ public class DefaultSecurityManage extends SecurityManage{
      */
     @Override
     public String load(UserInfo userInfo) {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put(securityProperties.getUserInfoPrefixToCache(), JSON.toJSONString(userInfo));
         //往缓冲中存取
         securityCache.set(securityProperties.getUserInfoPrefixToCache(),userInfo,securityProperties.getOverTime());
         //生成token
-        String token = JWTUtil.createToken(map, securityProperties.getTokenPrivateKey().getBytes());
+        String token = JWTUtils.createJWT(userInfo);
         log.info("用户:{} login success ! \uD83C\uDF89  生成token:{}",userInfo.getUsername(),token);
         return token;
     }

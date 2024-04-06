@@ -1,17 +1,18 @@
 package com.cloud.common;
 
-import cn.hutool.jwt.JWT;
-import cn.hutool.jwt.JWTUtil;
-import com.alibaba.fastjson2.JSON;
 import com.cloud.beans.UserInfo;
 import com.cloud.config.SecurityProperties;
 import com.cloud.exceptions.TokenOverTimeException;
 import com.cloud.exceptions.UnLoginException;
 import com.cloud.utils.JWTUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+
 public class DefaultReqHandle implements ReqHandle {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultReqHandle.class);
@@ -54,9 +55,16 @@ public class DefaultReqHandle implements ReqHandle {
      */
     @Override
     public UserInfo parse(String token) {
-        JWT jwt = JWTUtil.parseToken(token);
-        Object payload = jwt.getPayload(securityProperties.getUserInfoPrefixToCache());
-        return JSON.parseObject(payload.toString().getBytes(),UserInfo.class);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, String> map = JWTUtils.parseJWT(token);
+            String jsonMap = map.get("payload");
+            Map readValue = objectMapper.readValue(jsonMap, Map.class);
+            String JSON = (String) readValue.get(securityProperties.getUserInfoPrefixToCache());
+            return objectMapper.readValue(JSON,UserInfo.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
