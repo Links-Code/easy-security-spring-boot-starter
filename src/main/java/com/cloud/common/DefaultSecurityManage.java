@@ -53,6 +53,24 @@ public class DefaultSecurityManage extends SecurityManage{
         return token;
     }
 
+
+    /**
+     * 自定义Token保存用户信息
+     * @param userInfo 用户信息
+     * @param loadFunc 回调返回结果作为token保存用户信息
+     * @return token
+     */
+    public String load(UserInfo userInfo,LoadFunc loadFunc) {
+        //往缓冲中存取
+        securityCache.set(securityProperties.getUserInfoPrefixToCache(),userInfo,securityProperties.getOverTime());
+        //生成token
+        UserInfo toToken = loadFunc.saveToToken();
+        String token = JWTUtils.createJWT(toToken);
+        log.info("用户:{} login success ! \uD83C\uDF89  生成token:{}",userInfo.getUsername(),token);
+        return token;
+    }
+
+
     /**
      * 对密码进行加密
      * @param passwd 明文密码

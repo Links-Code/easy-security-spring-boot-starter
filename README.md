@@ -131,10 +131,10 @@ public class TestController {
 1.权限字符串设计
 - 用户表设计 
 
-  | user_id | username | password                         | email       | create_time |
-  |---------|----------|----------------------------------|-------------|-------------|
-  | 1       | 张三       | 202cb962ac59075b964b07152d234b70 | 123@163.com | 2024-03-12  |
-  | 2       | 李四       | 202cb962ac59075b964b07152d234b70 | 159@qq.com  | 2024-04-01  |
+| user_id | username | password                         | email       | create_time |
+|---------|----------|----------------------------------|-------------|-------------|
+| 1       | 张三       | 202cb962ac59075b964b07152d234b70 | 123@163.com | 2024-03-12  |
+| 2       | 李四       | 202cb962ac59075b964b07152d234b70 | 159@qq.com  | 2024-04-01  |
 
 
 - 角色表设计
@@ -241,3 +241,14 @@ easy:
    # 权限拦截器优先级
    authAspectOrder: 2
 ```
+
+## - 替换AES进行密码加密
+```java
+@Bean(name = {"passwordHandle"})
+    AESPasswordHandle aesPasswordHandle(){
+        return new AESPasswordHandle();
+    }
+```
+
+## 自定义一些逻辑如何注入bean 参考自动装配类即可  SecurityAutoConfiguration.java
+
