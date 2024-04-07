@@ -278,9 +278,9 @@ easy:
 ## - 替换AES进行密码加密
 ```java
 @Bean(name = {"passwordHandle"})
-    AESPasswordHandle aesPasswordHandle(){
-        return new AESPasswordHandle();
-    }
+AESPasswordHandle aesPasswordHandle(){
+    return new AESPasswordHandle();
+}
 ```
 
 ## 自定义一些逻辑如何注入bean 参考自动装配类即可  SecurityAutoConfiguration.java
