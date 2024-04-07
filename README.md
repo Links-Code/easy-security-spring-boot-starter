@@ -117,16 +117,6 @@ public class TestController {
 
 - 详细配置请往下见Doc
 
-# Contributors
-
-As always, thanks to our amazing contributors!
-
-<a href="https://github.com/jaywcjlove/github-action-contributors/graphs/contributors">
-  <img src="https://jaywcjlove.github.io/github-action-contributors/CONTRIBUTORS.svg" />
-</a>
-
-Made with [contributors](https://github.com/jaywcjlove/github-action-contributors).
-
 # Reference
 
 - <img src="./doc/images/gpt.png" alt="GPT" width="30" height="30"> ChatGPT 4
@@ -193,6 +183,17 @@ public class RoleType {
 
     public static final int PERSON = 2;
 }
+```
+
+## 任意通过登录拦截器接口获取用户信息
+```java
+
+@Autowired
+public SecurityManage securityManage;
+
+//获取用户信息
+UserInfo userInfo = securityManage.getUserInfo();
+
 ```
 
 ## - 自定义Redis缓存用户信息
