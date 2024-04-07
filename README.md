@@ -1,6 +1,6 @@
 
 
-# Easy-Security
+# Easy-Security <img src="./doc/images/easy-security.png" alt="GPT" width="40" height="40"> 
 
 # Overview
 Easy-Security 基于SpringBoot 实现用户登录认证以及授权框架  旨在轻量配置简便等!
@@ -115,8 +115,129 @@ public class TestController {
 }
 ```
 
-- 详细配置请看Wiki
+- 详细配置请往下看
 
 # Reference
 
 - <img src="./doc/images/gpt.png" alt="GPT" width="30" height="30"> ChatGPT 4
+
+
+
+# Doc 
+## - Database Design
+关于权限设计可以分两类
+
+
+1.权限字符串设计
+- 用户表设计 
+
+  | user_id | username | password                         | email       | create_time |
+  |---------|----------|----------------------------------|-------------|-------------|
+  | 1       | 张三       | 202cb962ac59075b964b07152d234b70 | 123@163.com | 2024-03-12  |
+  | 2       | 李四       | 202cb962ac59075b964b07152d234b70 | 159@qq.com  | 2024-04-01  |
+
+
+- 角色表设计
+
+| role_id | role_name | auth_str                              | create     |
+|---------|-----------|---------------------------------------|------------|
+| 1       | 管理员       | admin-query,admin-delete,admin-insert | 2024-03-01 |
+| 2       | 普通用户      | people-query                          | 2024-01-01 |
+
+- 角色与用户关系表
+
+| role_user_id | role_id | user_id |
+|--------------|---------|---------|
+| 1            | 1       | 1       |
+| 2            | 2       | 1       |
+
+
+用户1 即使管理员也是普通用户
+
+数据库查询（逗号进行拆分）出来吧字符串设置到 UserInfo的authStr中
+再需要授权的接口上加上
+例如 查询接口（只有管理员才可以进行查询 ）
+@Permission(value = "admin-query")
+
+
+2.角色设计
+
+- 两张表同上
+
+- 角色表设计
+
+| role_id | role_name | role_tag | create     |
+|---------|-----------|----------|------------|
+| 1       | 管理员       | 1        | 2024-03-01 |
+| 2       | 普通用户      | 2        | 2024-01-01 |
+
+数据库查询（逗号进行拆分）出来吧字符串设置到 UserInfo的rolesTag中
+再需要授权的接口上加上
+例如 查询接口（只有管理员才可以进行查询 ）
+@Permission(roles = {RoleType.ADMIN},type = AuthEnum.ROLE)
+
+- 可以定义角色类型 (不要使用枚举)
+```java
+public class RoleType {
+    public static final int ADMIN = 1;
+
+    public static final int PERSON = 2;
+}
+```
+
+## - 自定义Redis缓存用户信息
+1.引入redis依赖
+```pom
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+```
+
+2.配置文件设置redis
+```yaml
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+```
+
+3. 注入配置bean
+```java
+@Configuration
+public class Config {
+    
+    @Bean(name = {"securityCache"})
+    RedisSecurityCache securityCache(RedisTemplate<String,String> redisTemplate,SecurityProperties securityProperties){
+        return new RedisSecurityCache(redisTemplate,securityProperties);
+    }
+}
+```
+
+
+## - 权限配置文件详解
+```yaml
+easy:
+  security:
+   # 是否开启登录认证 
+   enableLogin: true
+   # 是否开启权限认证  
+   enableAuth: true
+   # token在请求头中名字
+   tokenName: 'token'
+   # token 签名
+   tokenPrivateKey: 'awd#awd?&8*'
+   # 缓存用户信息前缀 默认 user-info- + 用户ID
+   userInfoPrefixToCache: 'user-info-'
+   # 放行请求(放行登录请求 以及 主页以/home开头的请求)     
+   ignore-paths: ['/login','/home/**']
+   # token过期时间以及缓存时间  针对redis缓存生效 默认session 自行设置session失效即可     
+   overTime: 7
+   # 提前几天进行用户信息的续期
+   perExtendTime: 3
+   # 登录拦截器优先级 值越大优先级越小
+   loginInterceptorOrder: 1
+   # 权限拦截器优先级
+   authAspectOrder: 2
+```
