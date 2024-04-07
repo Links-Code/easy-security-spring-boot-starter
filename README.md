@@ -173,7 +173,10 @@ public class TestController {
 数据库查询（逗号进行拆分）出来吧字符串设置到 UserInfo的authStr中
 再需要授权的接口上加上
 例如 查询接口（只有管理员才可以进行查询 ）
+
+```java
 @Permission(value = "admin-query")
+```
 
 
 2.角色设计
@@ -190,7 +193,10 @@ public class TestController {
 数据库查询（逗号进行拆分）出来吧字符串设置到 UserInfo的rolesTag中
 再需要授权的接口上加上
 例如 查询接口（只有管理员才可以进行查询 ）
+
+```java
 @Permission(roles = {RoleType.ADMIN},type = AuthEnum.ROLE)
+```
 
 - 可以定义角色类型 (不要使用枚举)
 ```java
