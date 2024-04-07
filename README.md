@@ -144,7 +144,7 @@ public class TestController {
 关于权限设计可以分两类
 
 
-1.权限字符串设计
+1.基于权限字符串授权
 - 用户表设计 
 
 | user_id | username | password                         | email       | create_time |
@@ -179,7 +179,7 @@ public class TestController {
 ```
 
 
-2.角色设计
+2.基于角色授权
 
 - 两张表同上
 
