@@ -1,6 +1,6 @@
 
 
-# Easy-Security <img src="./doc/images/easy-security.png" alt="GPT" width="40" height="40"> 
+# Easy-Security <img src="./doc/images/easy-security.png" alt="" width="40" height="40"> 
 
 # Overview
 Easy-Security 基于SpringBoot 实现用户登录认证以及授权框架  旨在轻量配置简便等!
