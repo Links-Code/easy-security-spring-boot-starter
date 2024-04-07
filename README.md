@@ -23,7 +23,7 @@ Easy-Security 基于SpringBoot 实现用户登录认证以及授权框架  旨�
 
 # Quick Start
 
-1. Maven 引入依赖
+## 1. Maven 引入依赖
 ```pom
 <dependency>
     <groupId>io.github.links-code</groupId>
@@ -31,7 +31,13 @@ Easy-Security 基于SpringBoot 实现用户登录认证以及授权框架  旨�
     <version>1.0.0</version>
 </dependency>
 ```
-2. 配置文件放行登录请求
+
+Gradle引入
+```gredle
+implementation group: 'io.github.links-code', name: 'easy-security-spring-boot-starter', version: '1.0.0'
+```
+
+## 2. 配置文件放行登录请求
 ```yaml
 easy:
    security:
@@ -39,7 +45,9 @@ easy:
    ignore-paths: ['/login']
 ```
 
-3. 注册接口对密码进行加密(默认MD5方式加密) 
+## 3. 注册接口对密码进行加密(默认MD5方式加密) 
+
+### - 注册密码进行加密存储
 
 ```java
 @RestController
@@ -65,7 +73,12 @@ public class TestController {
 }
 ```
 
-4. 登录接口
+## 4. 登录接口
+
+### - 验证密码
+
+### -将数据库查询出来用户信息封装到UserInfo再通过框架的load保存用户信息
+
 ```java
 @RestController
 public class TestController {
@@ -97,7 +110,10 @@ public class TestController {
 ```
 
 
-5. 要对于接口进行权限检查加上注解即可(所有的类都是com.cloud包下的)
+## 5. 要对于接口进行权限检查加上注解即可(所有的类都是com.cloud包下的)
+
+### -加上对应权限注解即可
+
 ```java
 
 @RestController
