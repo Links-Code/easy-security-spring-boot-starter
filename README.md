@@ -17,7 +17,7 @@ Easy-Security 基于SpringBoot 实现用户登录认证以及授权框架  旨�
 
 | SpringBoot Version | Easy-Security  Version |
 |--------------------|------------------------|
-| 2.XX.XX            | 0.XX.XX - 2.XX.XX      |
+| 2.XX.XX            | 1.XX.XX - 2.XX.XX      |
 | 3.XX.XX            | 3.XX.XX                |
 
 
