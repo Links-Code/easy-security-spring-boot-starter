@@ -185,7 +185,7 @@ public class RoleType {
 }
 ```
 
-## 任意通过登录拦截器接口获取用户信息
+## - 任意通过登录拦截器接口获取用户信息
 ```java
 
 @Autowired
