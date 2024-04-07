@@ -115,7 +115,17 @@ public class TestController {
 }
 ```
 
-- 详细配置请往下看
+- 详细配置请往下见Doc
+
+# Contributors
+
+As always, thanks to our amazing contributors!
+
+<a href="https://github.com/jaywcjlove/github-action-contributors/graphs/contributors">
+  <img src="https://jaywcjlove.github.io/github-action-contributors/CONTRIBUTORS.svg" />
+</a>
+
+Made with [contributors](https://github.com/jaywcjlove/github-action-contributors).
 
 # Reference
 
