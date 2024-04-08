@@ -39,7 +39,7 @@ public class AuthSecurityInterceptor implements HandlerInterceptor , Ordered {
                 }catch (Exception e){
                     //防止内存溢出
                     securityManage.remove();
-                    log.error("😭权限拦截器发生异常:",e);
+                    log.error("😭权限拦截器发生异常");
                     throw e;
                 }
             }
