@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 public class EasySecurityInterceptor implements HandlerInterceptor, Ordered {
 
     private static final Logger log = LoggerFactory.getLogger(EasySecurityInterceptor.class);
@@ -28,7 +26,6 @@ public class EasySecurityInterceptor implements HandlerInterceptor, Ordered {
         this.securityManage = securityManage;
     }
 
-    private static final String HANDLED_FLAG_ATTRIBUTE = "easySecurityInterceptorHandled";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

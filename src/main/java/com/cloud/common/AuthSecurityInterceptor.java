@@ -10,9 +10,6 @@ import org.springframework.core.Ordered;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 public class AuthSecurityInterceptor implements HandlerInterceptor ,Ordered {
 
     private static final Logger log = LoggerFactory.getLogger(AuthSecurityInterceptor.class);
