@@ -7,11 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class AuthSecurityInterceptor implements HandlerInterceptor , Ordered {
+public class AuthSecurityInterceptor implements HandlerInterceptor ,Ordered {
 
     private static final Logger log = LoggerFactory.getLogger(AuthSecurityInterceptor.class);
 
@@ -20,8 +19,6 @@ public class AuthSecurityInterceptor implements HandlerInterceptor , Ordered {
     public SecurityProperties securityProperties;
 
     public SecurityManage securityManage;
-
-    public static final String LG_ITC= "AuthProcess";
 
     public AuthSecurityInterceptor(AuthHandle aspectHandle, SecurityProperties securityProperties, SecurityManage securityManage) {
         this.aspectHandle = aspectHandle;

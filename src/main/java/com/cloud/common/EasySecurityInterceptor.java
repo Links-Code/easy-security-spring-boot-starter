@@ -25,7 +25,6 @@ public class EasySecurityInterceptor implements HandlerInterceptor, Ordered {
         this.securityManage = securityManage;
     }
 
-    private static final String HANDLED_FLAG_ATTRIBUTE = "easySecurityInterceptorHandled";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
