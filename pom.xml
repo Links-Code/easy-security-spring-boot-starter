@@ -8,49 +8,14 @@
         <version>2.5.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-
-
-    <groupId>io.github.links-code</groupId>
+    <groupId>com.cloud</groupId>
     <artifactId>easy-security-spring-boot-starter</artifactId>
-    <version>3.2.0</version>
+    <version>0.0.1</version>
     <name>easy-security-spring-boot-starter</name>
-    <description>User authentication and authorization based on springboot</description>
-    <url>https://github.com/Links-Code/easy-security-spring-boot-starter</url>
-
-
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-
-
-    <developers>
-        <developer>
-            <id>links</id>
-            <name>cloud</name>
-            <email>cloud@163.com</email>
-            <roles>
-                <role>Project Manager</role>
-                <role>Architect</role>
-            </roles>
-        </developer>
-    </developers>
-
-
-    <scm>
-        <connection>https://github.com/Links-Code/easy-security-spring-boot-starter.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/Links-Code/easy-security-spring-boot-starter.git
-        </developerConnection>
-        <url>https://github.com/Links-Code/easy-security-spring-boot-starter</url>
-    </scm>
-
-
+    <description>easy-security-spring-boot-starter</description>
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
     </properties>
-
     <dependencies>
 
         <dependency>
@@ -72,69 +37,21 @@
 
     <build>
         <plugins>
-
-            <!--   central发布插件    -->
+            <!-- 使用maven-jar-plugin插件打包 -->
             <plugin>
-                <groupId>org.sonatype.central</groupId>
-                <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.4.0</version>
-                <extensions>true</extensions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
                 <configuration>
-                    <publishingServerId>links</publishingServerId>
-                    <tokenAuth>true</tokenAuth>
+                    <!-- 设置不需要主配置类 -->
+                    <archive>
+                        <manifestEntries>
+                            <Spring-Boot-Classes>BOOT-INF/classes/</Spring-Boot-Classes>
+                            <Spring-Boot-Lib>BOOT-INF/lib/</Spring-Boot-Lib>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
-            <!--   source源码插件 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--   javadoc插件 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <additionalparam>-Xdoclint:none</additionalparam>
-                            <failOnError>false</failOnError>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.5</version>
-                <configuration>
-                    <executable>D:\GnuPG\bin\gpg.exe</executable>
-                    <keyname>Links-Code</keyname>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 </project>
