@@ -28,9 +28,10 @@ Easy-Security 基于SpringBoot 实现用户登录认证以及授权框架  旨�
 <dependency>
     <groupId>io.github.links-code</groupId>
     <artifactId>easy-security-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.2.0</version>
 </dependency>
 ```
+- Springboot3 引入3.2.0
 
 Gradle引入
 ```gredle
