@@ -29,7 +29,7 @@ public class DefaultAuthHandle implements AuthHandle {
      * @throws Exception 异常
      */
     @Override
-    public void process(Permission permission) throws Exception{
+    public boolean process(Permission permission) throws Exception{
         //获取用户信息
         UserInfo userInfo = securityManage.getUserInfo();
         if (userInfo == null){
@@ -58,6 +58,8 @@ public class DefaultAuthHandle implements AuthHandle {
                 break;
             default:
                 log.error("未匹配到认证类型");
+                return false;
         }
+        return true;
     }
 }

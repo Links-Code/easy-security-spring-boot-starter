@@ -19,11 +19,13 @@ public class AuthSecurityInterceptor implements HandlerInterceptor , Ordered {
 
     public SecurityProperties securityProperties;
 
-    public AuthSecurityInterceptor(AuthHandle aspectHandle, SecurityProperties securityProperties) {
+    public SecurityManage securityManage;
+
+    public AuthSecurityInterceptor(AuthHandle aspectHandle, SecurityProperties securityProperties, SecurityManage securityManage) {
         this.aspectHandle = aspectHandle;
         this.securityProperties = securityProperties;
+        this.securityManage = securityManage;
     }
-
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -32,10 +34,24 @@ public class AuthSecurityInterceptor implements HandlerInterceptor , Ordered {
             if (handlerMethod.hasMethodAnnotation(Permission.class)) {
                 Permission annotation = handlerMethod.getMethodAnnotation(Permission.class);
                 //执行切面逻辑
-                aspectHandle.process(annotation);
+                try {
+                    return aspectHandle.process(annotation);
+                }catch (Exception e){
+                    //防止内存溢出
+                    securityManage.remove();
+                    log.error("😭权限拦截器发生异常:",e);
+                    throw e;
+                }
             }
         }
         return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        //防止内存溢出
+        securityManage.remove();
+        HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
     }
 
     @Override
