@@ -68,9 +68,9 @@ public class SecurityAutoConfiguration {
 
     /** 权限拦截器*/
     @Bean(name = {"authSecurityInterceptor"})
-    @DependsOn(value = {"authHandle"})
-    public AuthSecurityInterceptor AuthSecurityInterceptor(AuthHandle authHandle, SecurityProperties securityProperties){
-        return new AuthSecurityInterceptor(authHandle,securityProperties);
+    @DependsOn(value = {"authHandle","securityManage"})
+    public AuthSecurityInterceptor AuthSecurityInterceptor(AuthHandle authHandle, SecurityProperties securityProperties,SecurityManage securityManage){
+        return new AuthSecurityInterceptor(authHandle,securityProperties,securityManage);
     }
 
     /** 拦截器配置类*/

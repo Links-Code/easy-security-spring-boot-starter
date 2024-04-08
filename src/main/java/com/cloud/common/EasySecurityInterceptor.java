@@ -45,8 +45,8 @@ public class EasySecurityInterceptor implements HandlerInterceptor, Ordered {
             }catch (Exception e){
                 //防止内存溢出
                 securityManage.remove();
-                log.error("拦截器发生异常:",e);
-                throw new Exception(e);
+                log.error("😭登录拦截器发生异常:",e);
+                throw e;
             }
         }else {
             return true;
@@ -54,10 +54,10 @@ public class EasySecurityInterceptor implements HandlerInterceptor, Ordered {
     }
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         //防止内存溢出
         securityManage.remove();
-        HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
+        HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
     }
 
     @Override

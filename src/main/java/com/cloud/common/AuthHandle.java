@@ -6,5 +6,5 @@ public interface AuthHandle {
      * 权限执行逻辑
      * @param permission 权限注解
      */
-    public void process(Permission permission) throws Exception;
+    public boolean process(Permission permission) throws Exception;
 }
