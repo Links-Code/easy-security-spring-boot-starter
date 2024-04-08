@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 public class EasySecurityInterceptor implements HandlerInterceptor, Ordered {
@@ -18,7 +17,7 @@ public class EasySecurityInterceptor implements HandlerInterceptor, Ordered {
 
     SecurityManage securityManage;
 
-    public static final String LG_ITC= "LogProcess";
+    private final ThreadLocal<String> logInterceptorTL = new ThreadLocal<>();
 
     public EasySecurityInterceptor(ReqHandle reqHandle, SecurityProperties securityProperties, SecurityManage securityManage) {
         this.reqHandle = reqHandle;
@@ -34,22 +33,23 @@ public class EasySecurityInterceptor implements HandlerInterceptor, Ordered {
         /**
          * 由于在控制器或者业务层抛出异常 导致preHandle回执行两次 所以进行判断
          */
-        if (request.getAttribute(LG_ITC) != null){
+        if (logInterceptorTL.get() != null){
             //防止内存泄漏
             securityManage.threadUserInfo.remove();
+            logInterceptorTL.remove();
             return true;
         }
-        //标记拦截器处理请求
-        request.setAttribute(LG_ITC,true);
         //是否进行登录认证
         if (securityProperties.getEnableLogin()) {
             try {
+                //设置执行标记
+                logInterceptorTL.set("processed");
                 //需要拦截请求进行处理
                 return reqHandle.reqThrough(request);
             }catch (Exception e){
                 //防止内存溢出
                 securityManage.remove();
-                log.error("😭登录拦截器发生异常:",e);
+                log.error("😭登录拦截器发生异常");
                 throw e;
             }
         }else {
@@ -59,9 +59,9 @@ public class EasySecurityInterceptor implements HandlerInterceptor, Ordered {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        request.removeAttribute(LG_ITC);
         //防止内存溢出
         securityManage.remove();
+        logInterceptorTL.remove();
         HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
     }
 
