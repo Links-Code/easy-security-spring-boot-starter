@@ -2,14 +2,14 @@ package com.cloud.common;
 
 import com.cloud.annotion.Permission;
 import com.cloud.config.SecurityProperties;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class AuthSecurityInterceptor implements HandlerInterceptor , Ordered {
 

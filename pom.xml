@@ -5,17 +5,52 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.6</version>
+        <version>3.1.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.cloud</groupId>
+
+
+    <groupId>io.github.links-code</groupId>
     <artifactId>easy-security-spring-boot-starter</artifactId>
-    <version>0.0.1</version>
+    <version>3.1.0</version>
     <name>easy-security-spring-boot-starter</name>
-    <description>easy-security-spring-boot-starter</description>
+    <description>User authentication and authorization based on springboot</description>
+    <url>https://github.com/Links-Code/easy-security-spring-boot-starter</url>
+
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+
+    <developers>
+        <developer>
+            <id>links</id>
+            <name>cloud</name>
+            <email>cloud@163.com</email>
+            <roles>
+                <role>Project Manager</role>
+                <role>Architect</role>
+            </roles>
+        </developer>
+    </developers>
+
+
+    <scm>
+        <connection>https://github.com/Links-Code/easy-security-spring-boot-starter.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/Links-Code/easy-security-spring-boot-starter.git
+        </developerConnection>
+        <url>https://github.com/Links-Code/easy-security-spring-boot-starter</url>
+    </scm>
+
+
     <properties>
-        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
 
         <dependency>
@@ -37,21 +72,70 @@
 
     <build>
         <plugins>
-            <!-- 使用maven-jar-plugin插件打包 -->
+
+            <!--   central发布插件    -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.4.0</version>
+                <extensions>true</extensions>
                 <configuration>
-                    <!-- 设置不需要主配置类 -->
-                    <archive>
-                        <manifestEntries>
-                            <Spring-Boot-Classes>BOOT-INF/classes/</Spring-Boot-Classes>
-                            <Spring-Boot-Lib>BOOT-INF/lib/</Spring-Boot-Lib>
-                        </manifestEntries>
-                    </archive>
+                    <publishingServerId>links</publishingServerId>
+                    <tokenAuth>true</tokenAuth>
                 </configuration>
             </plugin>
+            <!--   source源码插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--   javadoc插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <executable>C:\Program Files\Java\jdk-21/bin/javadoc.exe</executable> <!-- 指定JDK 21的javadoc执行程序路径 -->
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                            <failOnError>false</failOnError>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <configuration>
+                    <executable>D:\GnuPG\bin\gpg.exe</executable>
+                    <keyname>Links-Code</keyname>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>
