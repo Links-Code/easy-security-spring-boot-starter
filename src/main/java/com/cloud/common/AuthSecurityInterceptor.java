@@ -10,8 +10,10 @@ import org.springframework.core.Ordered;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-public class AuthSecurityInterceptor implements HandlerInterceptor , Ordered {
+public class AuthSecurityInterceptor implements HandlerInterceptor ,Ordered {
 
     private static final Logger log = LoggerFactory.getLogger(AuthSecurityInterceptor.class);
 
@@ -39,7 +41,7 @@ public class AuthSecurityInterceptor implements HandlerInterceptor , Ordered {
                 }catch (Exception e){
                     //防止内存溢出
                     securityManage.remove();
-                    log.error("😭权限拦截器发生异常:",e);
+                    log.error("😭权限拦截器发生异常");
                     throw e;
                 }
             }

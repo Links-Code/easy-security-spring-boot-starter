@@ -2,6 +2,7 @@ package com.cloud.common;
 
 import com.cloud.beans.UserInfo;
 import com.cloud.config.SecurityProperties;
+import com.cloud.exceptions.UNVerifyTokenException;
 import com.cloud.exceptions.UserInfoOverTimeException;
 import com.cloud.exceptions.UNLoginException;
 import com.cloud.utils.JWTUtils;
@@ -43,10 +44,9 @@ public class DefaultReqHandle implements ReqHandle {
 
     @Override
     public void verify(String token) {
-        //JWTUtil.verify(token, securityProperties.getTokenPrivateKey().getBytes());
         boolean isValid = JWTUtils.validateJWT(token);
         if (!isValid)
-            throw new RuntimeException("非法Token");
+            throw new UNVerifyTokenException("非法Token");
     }
 
     /**
@@ -100,7 +100,6 @@ public class DefaultReqHandle implements ReqHandle {
         //从缓存中获取用户信息
         UserInfo info = securityCache.get(securityProperties.getUserInfoPrefixToCache() + userInfo.getUserId());
         if (info == null){
-            log.error("😭:{} 用户登录过期",userInfo);
             throw new UserInfoOverTimeException("用户信息过期!");
         }
         //往threadLocal保存用户信息
@@ -115,8 +114,8 @@ public class DefaultReqHandle implements ReqHandle {
      * @return token
      */
     public String getTokenToURL(HttpServletRequest request){
-        String token = request.getParameter(securityProperties.getTokenName());
         //尝试从 Query Param 获取token
+        String token = request.getParameter(securityProperties.getTokenName());
         if (StringUtils.hasText(token)){
             return token;
         }
