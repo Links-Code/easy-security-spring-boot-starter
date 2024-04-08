@@ -119,12 +119,6 @@ public class DefaultReqHandle implements ReqHandle {
         if (StringUtils.hasText(token)){
             return token;
         }
-        //尝试从路径参数获取token
-        String requestURL = request.getRequestURI();
-        String[] parts = requestURL.split("/");
-        if (parts.length > 0) {
-            return parts[parts.length - 1];
-        }
         return null;
     }
 
