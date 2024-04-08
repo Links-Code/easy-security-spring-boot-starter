@@ -3,7 +3,8 @@ package com.cloud.common;
 import com.cloud.annotion.Permission;
 import com.cloud.beans.UserInfo;
 import com.cloud.config.SecurityProperties;
-import com.cloud.exceptions.UnPermissionException;
+import com.cloud.exceptions.UNLoginException;
+import com.cloud.exceptions.UNPermissionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Arrays;
@@ -31,6 +32,9 @@ public class DefaultAuthHandle implements AuthHandle {
     public void process(Permission permission) throws Exception{
         //获取用户信息
         UserInfo userInfo = securityManage.getUserInfo();
+        if (userInfo == null){
+            throw new UNLoginException(securityProperties.getLoginMsgError());
+        }
         switch (permission.type()){
             case AUTH_STR:
                 //获取标注的注解值
@@ -39,7 +43,7 @@ public class DefaultAuthHandle implements AuthHandle {
                 boolean isAuth = Arrays.stream(values).anyMatch(userInfo.getAuthStr()::contains);
                 if (!isAuth){
                     log.error("\uD83D\uDE1E 用户: {} -- :{}",userInfo,securityProperties.getAuthMsgError());
-                    throw new UnPermissionException(securityProperties.getAuthMsgError());
+                    throw new UNPermissionException(securityProperties.getAuthMsgError());
                 }
                 break;
             case ROLE:
@@ -49,7 +53,7 @@ public class DefaultAuthHandle implements AuthHandle {
                 boolean match = Arrays.stream(roles).anyMatch(rolesTag::contains);
                 if (!match){
                     log.error("\uD83D\uDE1E 用户: {} -- :{}",userInfo,securityProperties.getAuthMsgError());
-                    throw new UnPermissionException(securityProperties.getAuthMsgError());
+                    throw new UNPermissionException(securityProperties.getAuthMsgError());
                 }
                 break;
             default:

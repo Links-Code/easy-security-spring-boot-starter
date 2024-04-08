@@ -2,8 +2,8 @@ package com.cloud.common;
 
 import com.cloud.beans.UserInfo;
 import com.cloud.config.SecurityProperties;
-import com.cloud.exceptions.TokenOverTimeException;
-import com.cloud.exceptions.UnLoginException;
+import com.cloud.exceptions.UserInfoOverTimeException;
+import com.cloud.exceptions.UNLoginException;
 import com.cloud.utils.JWTUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -86,11 +86,11 @@ public class DefaultReqHandle implements ReqHandle {
      * @throws RuntimeException 异常
      */
     @Override
-    public boolean reqThrough(HttpServletRequest request) throws RuntimeException{
+    public boolean reqThrough(HttpServletRequest request) throws Exception{
         //获取token
         String token = getToken(request);
         if (!StringUtils.hasText(token)){
-            throw new UnLoginException(securityProperties.getLoginMsgError());
+            throw new UNLoginException(securityProperties.getLoginMsgError());
         }
         //验证是否本系统token
         verify(token);
@@ -100,7 +100,7 @@ public class DefaultReqHandle implements ReqHandle {
         UserInfo info = securityCache.get(securityProperties.getUserInfoPrefixToCache() + userInfo.getUserId());
         if (info == null){
             log.error("😭:{} 用户登录过期",userInfo);
-            throw new TokenOverTimeException("用户登录过期!");
+            throw new UserInfoOverTimeException("用户信息过期!");
         }
         //往threadLocal保存用户信息
         securityManage.threadUserInfo.set(info);

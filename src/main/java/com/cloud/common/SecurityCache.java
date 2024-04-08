@@ -10,7 +10,7 @@ public interface SecurityCache {
      * @param key 键
      * @return 用户信息
      */
-    UserInfo get(String key);
+    UserInfo get(String key) throws Exception;
 
 
     /**
@@ -19,7 +19,7 @@ public interface SecurityCache {
      * @param value 用户信息
      * @param overTime 过期时间
      */
-    void set(String key, UserInfo value,Integer overTime);
+    void set(String key, UserInfo value,Integer overTime) throws RuntimeException;
 
     /**
      * 移除用户信息

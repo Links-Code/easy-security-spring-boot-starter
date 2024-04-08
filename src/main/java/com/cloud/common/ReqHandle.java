@@ -26,7 +26,7 @@ public interface ReqHandle {
      * @param request 请求
      * @return 是否放行
      */
-    default boolean reqThrough(HttpServletRequest request) throws RuntimeException{
+    default boolean reqThrough(HttpServletRequest request) throws Exception{
         return true;
     }
 

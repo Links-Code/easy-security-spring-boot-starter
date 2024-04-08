@@ -17,15 +17,17 @@ public class RedisSecurityCache implements SecurityCache{
     }
 
     @Override
-    public UserInfo get(String key) {
-        //检查是否需要进行延期
-        extendTime(key);
+    public UserInfo get(String key) throws Exception{
+
         ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.readValue(securityRedisTemplate.opsForValue().get(key), UserInfo.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+            String userInfoJson = securityRedisTemplate.opsForValue().get(key);
+            if (userInfoJson == null){
+                return null;
+            }else {
+                //检查是否需要进行延期
+                extendTime(key);
+                return objectMapper.readValue(userInfoJson, UserInfo.class);
+            }
     }
 
     @Override
