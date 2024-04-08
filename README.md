@@ -17,8 +17,8 @@ Easy-Security 基于SpringBoot 实现用户登录认证以及授权框架  旨�
 
 | SpringBoot Version | Easy-Security  Version |
 |--------------------|------------------------|
-| 2.XX.XX            | 1.XX.XX - 2.XX.XX      |
-| 3.XX.XX            | 3.XX.XX                |
+| 2.XX.XX            | 1.2.0 - 2.X.X      |
+| 3.XX.XX            | 3.2.0 -3.XX        |
 
 
 # Quick Start
@@ -31,11 +31,10 @@ Easy-Security 基于SpringBoot 实现用户登录认证以及授权框架  旨�
     <version>1.2.0</version>
 </dependency>
 ```
-- Springboot3 引入3.2.0
 
 Gradle引入
 ```gredle
-implementation group: 'io.github.links-code', name: 'easy-security-spring-boot-starter', version: '1.0.0'
+implementation group: 'io.github.links-code', name: 'easy-security-spring-boot-starter', version: '1.2.0'
 ```
 
 ## 2. 配置文件放行登录请求
