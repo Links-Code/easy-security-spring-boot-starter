@@ -21,6 +21,8 @@ public class AuthSecurityInterceptor implements HandlerInterceptor , Ordered {
 
     public SecurityManage securityManage;
 
+    public static final String LG_ITC= "AuthProcess";
+
     public AuthSecurityInterceptor(AuthHandle aspectHandle, SecurityProperties securityProperties, SecurityManage securityManage) {
         this.aspectHandle = aspectHandle;
         this.securityProperties = securityProperties;

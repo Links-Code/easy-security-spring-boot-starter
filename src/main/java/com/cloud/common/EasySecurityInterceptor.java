@@ -18,6 +18,8 @@ public class EasySecurityInterceptor implements HandlerInterceptor, Ordered {
 
     SecurityManage securityManage;
 
+    public static final String LG_ITC= "LogProcess";
+
     public EasySecurityInterceptor(ReqHandle reqHandle, SecurityProperties securityProperties, SecurityManage securityManage) {
         this.reqHandle = reqHandle;
         this.securityProperties = securityProperties;
@@ -28,15 +30,17 @@ public class EasySecurityInterceptor implements HandlerInterceptor, Ordered {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
         /**
          * 由于在控制器或者业务层抛出异常 导致preHandle回执行两次 所以进行判断
          */
-        //判断Thread local是否有用户信息
-        if (securityManage.threadUserInfo.get() != null){
+        if (request.getAttribute(LG_ITC) != null){
             //防止内存泄漏
             securityManage.threadUserInfo.remove();
             return true;
         }
+        //标记拦截器处理请求
+        request.setAttribute(LG_ITC,true);
         //是否进行登录认证
         if (securityProperties.getEnableLogin()) {
             try {
@@ -55,6 +59,7 @@ public class EasySecurityInterceptor implements HandlerInterceptor, Ordered {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        request.removeAttribute(LG_ITC);
         //防止内存溢出
         securityManage.remove();
         HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
