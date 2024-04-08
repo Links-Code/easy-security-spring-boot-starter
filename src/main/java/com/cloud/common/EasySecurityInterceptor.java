@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 public class EasySecurityInterceptor implements HandlerInterceptor, Ordered {
 
     private static final Logger log = LoggerFactory.getLogger(EasySecurityInterceptor.class);
