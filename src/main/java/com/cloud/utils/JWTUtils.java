@@ -4,6 +4,8 @@ import com.cloud.beans.UserInfo;
 import com.cloud.config.SecurityProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import java.util.Base64;
 import java.util.HashMap;
@@ -12,6 +14,8 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class JWTUtils implements InitializingBean {
+
+    private static final Logger log = LoggerFactory.getLogger(JWTUtils.class);
 
     private static String SECRET;
     private static final String ALGORITHM = "HmacSHA256";
@@ -102,7 +106,7 @@ public class JWTUtils implements InitializingBean {
             byte[] bytes = mac.doFinal(data.getBytes());
             return Base64.getEncoder().encodeToString(bytes);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("generateSignature error:",e);
             return null;
         }
     }

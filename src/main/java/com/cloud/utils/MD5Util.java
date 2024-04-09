@@ -1,10 +1,15 @@
 package com.cloud.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MD5Util {
+
+    private static final Logger log = LoggerFactory.getLogger(MD5Util.class);
 
 
     public static String encode(String input) {
@@ -21,7 +26,7 @@ public class MD5Util {
             return sb.toString();
         } catch (NoSuchAlgorithmException e) {
             // Handle the exception properly, e.g., log the error or throw a custom exception
-            e.printStackTrace();
+            log.error("encode error",e);
             return ""; // Provide a default hash value
         }
     }

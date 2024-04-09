@@ -29,9 +29,8 @@ public class EasySecurityInterceptor implements HandlerInterceptor, Ordered {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        /**
-         * 由于在控制器或者业务层抛出异常 导致preHandle回执行两次 所以进行判断
-         */
+
+         //由于在控制器或者业务层抛出异常 并且没有配置全局异常处理 导致preHandle回执行两次 所以进行判断
         if (logInterceptorTL.get() != null){
             //防止内存泄漏
             securityManage.threadUserInfo.remove();
