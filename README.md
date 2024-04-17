@@ -79,6 +79,8 @@ public class TestController {
 
 ### -将数据库查询出来用户信息封装到UserInfo再通过框架的load保存用户信息
 
+- ! 提示：需要扩展存储用户信息  继承UserInfo即可，完后再load
+
 ```java
 @RestController
 public class TestController {
