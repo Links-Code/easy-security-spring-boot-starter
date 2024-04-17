@@ -131,6 +131,16 @@ public class TestController {
 }
 ```
 
+## 任意通过登录后的请求(请求头携带token) 获取用户信息方法
+
+```java
+@Autowired
+public SecurityManage securityManage;
+
+//获取用户信息
+UserInfo userInfo = securityManage.getUserInfo();
+```
+
 - 详细配置请往下见Doc
 
 # Reference
@@ -282,6 +292,57 @@ AESPasswordHandle aesPasswordHandle(){
     return new AESPasswordHandle();
 }
 ```
+
+## - 捕获异常并处理
+
+- 在前后端分离系统你可以捕获该权限认证框架抛出异常并且进行处理
+  
+```java
+@RestControllerAdvice
+public class ExceptionHandle {
+    
+    //为了方面演示 定义内部类 正常自已新建类统一异常响应体    
+    static class Resp<T>{
+        public Integer code;
+        public String msg;
+        
+        public T data;
+
+        public Resp(Integer code, String msg) {
+            this.code = code;
+            this.msg = msg;
+        }
+    }
+    
+    
+    //未登录异常
+    @ExceptionHandler(value = {UNLoginException.class})
+    public Resp<String> handleUnLogon(UNLoginException unLoginException){
+        return new Resp<>(400,"未登录，请先登录！");
+    }
+
+
+    @ExceptionHandler(value = {UNPermissionException.class})
+    public Resp<String> handleUnLogon(UNPermissionException unPermissionException){
+        return new Resp<>(400,"您暂无权限");
+    }
+
+
+    @ExceptionHandler(value = {UNVerifyTokenException.class})
+    public Resp<String> handleUnLogon(UNVerifyTokenException unVerifyTokenException){
+        return new Resp<>(400,"token验证未通过");
+    }
+
+
+    @ExceptionHandler(value = {UserInfoOverTimeException.class})
+    public Resp<String> handleUnLogon(UserInfoOverTimeException userInfoOverTimeException){
+        return new Resp<>(400,"用户信息过期，请重新登录！");
+    }
+    
+}
+```
+
+- Mvc 需要替换类注解 @ControllerAdvice 并且注入视图解析器进行异常后视图的跳转
 
 ## 自定义一些逻辑如何注入bean 参考自动装配类即可  SecurityAutoConfiguration.java
 
